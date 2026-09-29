@@ -3,7 +3,7 @@ spring:
     name: backend
 
   datasource:
-    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:vyapaar}?createDatabaseIfNotExist=true&serverTimezone=Asia/Kolkata
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:vyapaar}?createDatabaseIfNotExist=true&serverTimezone=Asia/Kolkata&sslMode=${DB_SSL_MODE:DISABLED}
     username: ${DB_USERNAME:root}
     password: ${DB_PASSWORD}
 
