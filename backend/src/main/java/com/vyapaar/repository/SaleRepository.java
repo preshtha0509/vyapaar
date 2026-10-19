@@ -14,5 +14,8 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
 
     List<Sale> findBySaleDateBetween(LocalDate from, LocalDate to);
 
+    // Module 15: one receipt covers all of a customer's sales on a single day.
+    List<Sale> findByCustomerIdAndSaleDateOrderByIdAsc(Long customerId, LocalDate saleDate);
+
     long countByProductId(Long productId);
 }

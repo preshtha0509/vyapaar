@@ -18,6 +18,28 @@ export type CustomerForm = {
   notes: string
 }
 
+export type ReceiptLine = {
+  productName: string
+  unit: string
+  quantity: number
+  rate: number
+  lineTotal: number
+}
+
+// whatsAppLink is null when the customer has no usable mobile number on record.
+export type Receipt = {
+  id: number
+  receiptNumber: string
+  receiptDate: string
+  customerName: string
+  publicToken: string
+  receiptUrl: string
+  pdfUrl: string
+  subtotal: number
+  whatsAppLink: string | null
+  lines: ReceiptLine[]
+}
+
 export type Supplier = {
   id: number
   name: string

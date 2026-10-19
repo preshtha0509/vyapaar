@@ -8,6 +8,7 @@ import { NewPurchasePage } from './pages/NewPurchasePage'
 import { NewSalePage } from './pages/NewSalePage'
 import { PaymentsPage } from './pages/PaymentsPage'
 import { ProductsPage } from './pages/ProductsPage'
+import { ReceiptsPage } from './pages/ReceiptsPage'
 import { SuppliersPage } from './pages/SuppliersPage'
 
 const ReportsPage = lazy(async () => {
@@ -37,6 +38,7 @@ function App() {
         <Route path="sales/new" element={<NewSalePage />} />
         <Route path="purchases/new" element={<NewPurchasePage />} />
         <Route path="payments" element={<PaymentsPage />} />
+        <Route path="receipts" element={<ReceiptsPage />} />
         <Route
           path="reports"
           element={
