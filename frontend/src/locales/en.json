@@ -11,7 +11,8 @@
     "purchases": "Purchases",
     "payments": "Payments",
     "reports": "Reports",
-    "chat": "Ask"
+    "chat": "Ask",
+    "receipts": "Receipts"
   },
   "common": {
     "menu": "Menu",
@@ -212,6 +213,30 @@
     "loadError": "Could not load parties. Check that the backend is running on localhost:8080.",
     "selectError": "Select a customer or supplier before saving the payment.",
     "saveError": "Could not save payment. Confirm party, amount, date, and mode are valid."
+  },
+  "receipts": {
+    "eyebrow": "Send a receipt",
+    "title": "Receipts",
+    "help": "Pick a customer and a day. The receipt covers every item they bought that day, as one PDF you can send on WhatsApp.",
+    "details": "Receipt for",
+    "preview": "Receipt",
+    "empty": "Choose a customer and a date to build the receipt.",
+    "loadingCustomers": "Loading customers...",
+    "selectCustomer": "Select customer",
+    "generate": "Build receipt",
+    "generating": "Building...",
+    "receiptNumber": "Receipt number",
+    "total": "Total",
+    "item": "Item",
+    "previewPdf": "Open PDF",
+    "sendWhatsapp": "Send on WhatsApp",
+    "sent": "Receipt opened in WhatsApp. Press send there to deliver it.",
+    "noPhone": "This customer has no usable mobile number, so WhatsApp is unavailable. Add a 10-digit number on the Customers page.",
+    "linkLabel": "Receipt link",
+    "linkWarning": "Anyone with this link can open this receipt, so share it only with the buyer.",
+    "loadError": "Could not load customers.",
+    "selectError": "Please select a customer.",
+    "noSales": "No sales found for that customer on that date."
   },
   "bill": {
     "title": "Bill",

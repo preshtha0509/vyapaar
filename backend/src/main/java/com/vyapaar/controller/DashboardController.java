@@ -1,75 +1,73 @@
 package com.vyapaar.controller;
 
-import com.vyapaar.entity.Customer;
-import com.vyapaar.entity.Supplier;
-import com.vyapaar.repository.CustomerRepository;
-import com.vyapaar.repository.SupplierRepository;
-import com.vyapaar.service.LedgerService;
-import org.springframework.web.bind.annotation.*;
+import com.vyapaar.dto.PartyBalanceDTO;
+import com.vyapaar.repository.ReportsRepository;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
+/**
+ * The dashboard summary.
+ *
+ * This used to ask LedgerService for one balance per party, and each of those calls pulled every
+ * sale and every payment row for that party into memory to add two numbers -- roughly 3 queries
+ * and hundreds of objects per customer. It now reads every balance in TWO queries total, computed
+ * in SQL with the same formula LedgerService uses.
+ *
+ * The response shape is unchanged: { totalToReceive, totalToPay, topCustomers, topSuppliers },
+ * with each row as { id, name, balance }, so the frontend needs no change.
+ */
 @RestController
 @RequestMapping("/api/dashboard")
 public class DashboardController {
 
-    private final CustomerRepository customerRepository;
-    private final SupplierRepository supplierRepository;
-    private final LedgerService ledgerService;
+    private static final int TOP_N = 5;
 
-    public DashboardController(CustomerRepository customerRepository,
-                               SupplierRepository supplierRepository,
-                               LedgerService ledgerService) {
-        this.customerRepository = customerRepository;
-        this.supplierRepository = supplierRepository;
-        this.ledgerService = ledgerService;
+    private final ReportsRepository reportsRepository;
+
+    public DashboardController(ReportsRepository reportsRepository) {
+        this.reportsRepository = reportsRepository;
     }
 
     @GetMapping("/summary")
     public Map<String, Object> getSummary() {
-        List<Customer> customers = customerRepository.findAll();
-        List<Supplier> suppliers = supplierRepository.findAll();
+        List<PartyBalanceDTO> customers = reportsRepository.getAllCustomerBalances();
+        List<PartyBalanceDTO> suppliers = reportsRepository.getAllSupplierBalances();
 
-        List<Map<String, Object>> customerBalances = new ArrayList<>();
-        double totalToReceive = 0;
-        for (Customer c : customers) {
-            double bal = ledgerService.getCustomerBalance(c.getId());
-            Map<String, Object> customerBalance = new HashMap<>();
-            customerBalance.put("id", c.getId());
-            customerBalance.put("name", c.getName());
-            customerBalance.put("balance", bal);
-            customerBalances.add(customerBalance);
-            totalToReceive += bal;
-        }
-
-        List<Map<String, Object>> supplierBalances = new ArrayList<>();
-        double totalToPay = 0;
-        for (Supplier s : suppliers) {
-            double bal = ledgerService.getSupplierBalance(s.getId());
-            Map<String, Object> supplierBalance = new HashMap<>();
-            supplierBalance.put("id", s.getId());
-            supplierBalance.put("name", s.getName());
-            supplierBalance.put("balance", bal);
-            supplierBalances.add(supplierBalance);
-            totalToPay += bal;
-        }
-
-        List<Map<String, Object>> topCustomers = customerBalances.stream()
-                .sorted((a, b) -> Double.compare((Double) b.get("balance"), (Double) a.get("balance")))
-                .limit(5)
-                .collect(Collectors.toList());
-
-        List<Map<String, Object>> topSuppliers = supplierBalances.stream()
-                .sorted((a, b) -> Double.compare((Double) b.get("balance"), (Double) a.get("balance")))
-                .limit(5)
-                .collect(Collectors.toList());
-
-        Map<String, Object> summary = new HashMap<>();
-        summary.put("totalToReceive", totalToReceive);
-        summary.put("totalToPay", totalToPay);
-        summary.put("topCustomers", topCustomers);
-        summary.put("topSuppliers", topSuppliers);
+        // Both queries already sort by balance descending, so the top N is just the first N.
+        Map<String, Object> summary = new LinkedHashMap<>();
+        summary.put("totalToReceive", total(customers));
+        summary.put("totalToPay", total(suppliers));
+        summary.put("topCustomers", rows(customers, TOP_N));
+        summary.put("topSuppliers", rows(suppliers, TOP_N));
         return summary;
+    }
+
+    private double total(List<PartyBalanceDTO> parties) {
+        double sum = 0;
+        for (PartyBalanceDTO party : parties) {
+            sum += party.getBalance() == null ? 0 : party.getBalance();
+        }
+        return sum;
+    }
+
+    private List<Map<String, Object>> rows(List<PartyBalanceDTO> parties, int limit) {
+        List<Map<String, Object>> rows = new ArrayList<>();
+        for (PartyBalanceDTO party : parties) {
+            if (rows.size() == limit) {
+                break;
+            }
+            Map<String, Object> row = new LinkedHashMap<>();
+            row.put("id", party.getId());
+            row.put("name", party.getName());
+            row.put("balance", party.getBalance());
+            rows.add(row);
+        }
+        return rows;
     }
 }

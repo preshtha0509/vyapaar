@@ -2,6 +2,7 @@ package com.vyapaar.repository;
 
 import com.vyapaar.dto.CustomerBalanceRankDTO;
 import com.vyapaar.dto.CustomerBalanceTrendDTO;
+import com.vyapaar.dto.PartyBalanceDTO;
 import com.vyapaar.dto.SalesTrendDTO;
 import com.vyapaar.dto.SupplierAgingDTO;
 import com.vyapaar.entity.Customer;
@@ -14,6 +15,45 @@ import java.util.List;
 
 @Repository
 public interface ReportsRepository extends JpaRepository<Customer, Long> {
+
+    /**
+     * Every customer's balance in ONE query, using the same formula as LedgerService:
+     * opening balance + sales - payments received.
+     *
+     * The dashboard used to call LedgerService once per customer, and each of those calls loaded
+     * every sale and every payment row for that customer into memory just to add two numbers.
+     * Fifty customers meant roughly 150 queries and thousands of objects for one page.
+     */
+    @Query(value = """
+        SELECT
+            c.id   AS id,
+            c.name AS name,
+            (
+                c.opening_balance
+                + COALESCE((SELECT SUM(s.total) FROM sales s WHERE s.customer_id = c.id), 0)
+                - COALESCE((SELECT SUM(p.amount) FROM payments p
+                            WHERE p.party_type = 'CUSTOMER' AND p.party_id = c.id), 0)
+            ) AS balance
+        FROM customers c
+        ORDER BY balance DESC, c.name ASC
+        """, nativeQuery = true)
+    List<PartyBalanceDTO> getAllCustomerBalances();
+
+    /** Every supplier's balance in one query: opening balance + purchases - payments made. */
+    @Query(value = """
+        SELECT
+            sp.id   AS id,
+            sp.name AS name,
+            (
+                sp.opening_balance
+                + COALESCE((SELECT SUM(pu.total) FROM purchases pu WHERE pu.supplier_id = sp.id), 0)
+                - COALESCE((SELECT SUM(pay.amount) FROM payments pay
+                            WHERE pay.party_type = 'SUPPLIER' AND pay.party_id = sp.id), 0)
+            ) AS balance
+        FROM suppliers sp
+        ORDER BY balance DESC, sp.name ASC
+        """, nativeQuery = true)
+    List<PartyBalanceDTO> getAllSupplierBalances();
 
     @Query(value = """
         SELECT 

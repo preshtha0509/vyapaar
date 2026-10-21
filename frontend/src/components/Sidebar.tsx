@@ -16,6 +16,7 @@ const navItems: NavItem[] = [
   { labelKey: 'nav.sales', to: '/sales/new' },
   { labelKey: 'nav.purchases', to: '/purchases/new' },
   { labelKey: 'nav.payments', to: '/payments' },
+  { labelKey: 'nav.receipts', to: '/receipts' },
   { labelKey: 'nav.reports', to: '/reports' },
   { labelKey: 'nav.chat', to: '/chat' },
 ]

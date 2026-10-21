@@ -20,6 +20,12 @@ spring:
 server:
   port: ${PORT:8080}
 
+# Module 15: receipt delivery. public-url builds the link that is shared with the buyer.
+receipt:
+  public-url: ${APP_PUBLIC_URL:http://localhost:8080}
+  business-name: ${BUSINESS_NAME:VYAPAAR}
+  business-phone: ${BUSINESS_PHONE:}
+
 # Module 14: AI chat assistant.
 # chat.db deliberately has its own URL, username and password and never falls back to the main
 # database account, so the assistant can only ever read.
