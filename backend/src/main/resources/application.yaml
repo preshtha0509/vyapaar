@@ -19,3 +19,9 @@ spring:
 
 server:
   port: ${PORT:8080}
+
+# Module 15: receipt delivery. public-url builds the link that is shared with the buyer.
+receipt:
+  public-url: ${APP_PUBLIC_URL:http://localhost:8080}
+  business-name: ${BUSINESS_NAME:VYAPAAR}
+  business-phone: ${BUSINESS_PHONE:}
