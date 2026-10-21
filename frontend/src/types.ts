@@ -154,3 +154,10 @@ export type SupplierVolumeRow = {
   supplier: string
   total: number
 }
+
+export type ChatResponse = {
+  answer: string
+  sql: string | null
+  columns: string[]
+  rows: Record<string, string | number | boolean | null>[]
+}

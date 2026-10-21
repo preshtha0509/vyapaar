@@ -17,6 +17,7 @@ const navItems: NavItem[] = [
   { labelKey: 'nav.purchases', to: '/purchases/new' },
   { labelKey: 'nav.payments', to: '/payments' },
   { labelKey: 'nav.reports', to: '/reports' },
+  { labelKey: 'nav.chat', to: '/chat' },
 ]
 
 export function Sidebar() {

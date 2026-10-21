@@ -2,6 +2,7 @@ import { lazy, Suspense } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { AppShell } from './components/AppShell'
+import { ChatPage } from './pages/ChatPage'
 import { CustomersPage } from './pages/CustomersPage'
 import { DashboardPage } from './pages/DashboardPage'
 import { NewPurchasePage } from './pages/NewPurchasePage'
@@ -37,6 +38,7 @@ function App() {
         <Route path="sales/new" element={<NewSalePage />} />
         <Route path="purchases/new" element={<NewPurchasePage />} />
         <Route path="payments" element={<PaymentsPage />} />
+        <Route path="chat" element={<ChatPage />} />
         <Route
           path="reports"
           element={
