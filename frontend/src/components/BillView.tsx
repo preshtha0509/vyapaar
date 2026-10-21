@@ -2,8 +2,10 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { api } from '../api/client'
 
+// Only the fields this component uses, and only fields BillService actually sets.
+// `saleId` used to be declared here but the API never returns it, so it was always undefined --
+// the sale id comes from the saleId prop instead.
 interface BillResponse {
-  saleId: number
   customerPhone: string
   billText: string
 }
