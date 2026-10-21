@@ -1,10 +1,10 @@
 package com.vyapaar.service;
 
-import com.vyapaar.entity.Product;
 import com.vyapaar.entity.Purchase;
 import com.vyapaar.repository.ProductRepository;
 import com.vyapaar.repository.PurchaseRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -23,15 +23,25 @@ public class PurchaseService {
         return purchaseRepository.findAll();
     }
 
+    /**
+     * Records a purchase, increases stock, and moves the product's restock date forward.
+     * Same reasoning as SaleService.saveSale: one transaction, and the arithmetic happens in the
+     * database so two simultaneous purchases cannot lose an update.
+     */
+    @Transactional
     public Purchase savePurchase(Purchase purchase) {
+        if (purchase.getProduct() == null || purchase.getProduct().getId() == null) {
+            throw new IllegalArgumentException("A purchase needs a product.");
+        }
+
         purchase.setTotal(purchase.getQuantity() * purchase.getRate());
         Purchase saved = purchaseRepository.save(purchase);
 
-        Product product = productRepository.findById(saved.getProduct().getId())
-                .orElseThrow(() -> new RuntimeException("Product not found: " + saved.getProduct().getId()));
-        product.setLastRestockedDate(saved.getPurchaseDate());
-        product.setStockQuantity((product.getStockQuantity() != null ? product.getStockQuantity() : 0.0) + saved.getQuantity());
-        productRepository.save(product);
+        int changed = productRepository.adjustStockAndRestockDate(
+                saved.getProduct().getId(), saved.getQuantity(), saved.getPurchaseDate());
+        if (changed == 0) {
+            throw new IllegalArgumentException("Product not found: " + saved.getProduct().getId());
+        }
 
         return saved;
     }
