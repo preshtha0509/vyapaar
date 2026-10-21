@@ -25,3 +25,15 @@ receipt:
   public-url: ${APP_PUBLIC_URL:http://localhost:8080}
   business-name: ${BUSINESS_NAME:VYAPAAR}
   business-phone: ${BUSINESS_PHONE:}
+
+# Module 14: AI chat assistant.
+# chat.db deliberately has its own URL, username and password and never falls back to the main
+# database account, so the assistant can only ever read.
+chat:
+  api-key: ${CHAT_API_KEY:}
+  model: ${CHAT_MODEL:claude-haiku-5-5}
+  access-code: ${CHAT_ACCESS_CODE:}
+  db:
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:vyapaar}?serverTimezone=Asia/Kolkata&sslMode=${DB_SSL_MODE:DISABLED}
+    username: ${CHAT_DB_USERNAME:}
+    password: ${CHAT_DB_PASSWORD:}

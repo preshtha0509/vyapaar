@@ -11,6 +11,7 @@
     "purchases": "Purchases",
     "payments": "Payments",
     "reports": "Reports",
+    "chat": "Ask",
     "receipts": "Receipts"
   },
   "common": {
@@ -91,6 +92,24 @@
     "emptySupplierVolume": "No supplier purchases in this range.",
     "loading": "Loading reports...",
     "loadError": "Could not load reports. Check that the backend is running on localhost:8080."
+  },
+  "chat": {
+    "eyebrow": "Ask your data",
+    "title": "Ask VYAPAAR",
+    "help": "Ask a question about your sales, purchases, payments or balances. The assistant only reads data and can never change it.",
+    "accessCode": "Access code",
+    "unlock": "Unlock",
+    "placeholder": "For example: show July sales",
+    "send": "Ask",
+    "thinking": "Thinking...",
+    "empty": "Ask a question to get started.",
+    "showSql": "Show SQL",
+    "hideSql": "Hide SQL",
+    "rowsShown": "Showing the first {{shown}} of {{total}} rows.",
+    "errorGeneric": "Something went wrong. Please try again.",
+    "example1": "Show July sales",
+    "example2": "Who owes me the most?",
+    "example3": "Which products are low on stock?"
   },
   "parties": {
     "eyebrow": "Party ledger",
